@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="__picker_mystyle" parent="android:Animation">
+        <item name="@android:windowEnterAnimation">@anim/__picker_dialog_enter</item>
+        //进入时的动画
+        <item name="@android:windowExitAnimation">@anim/__picker_dialog_exit</item>
+        //退出时的动画
+    </style>
+</resources>

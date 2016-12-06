@@ -1,0 +1,36 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:background="@android:color/background_dark"
+    android:orientation="vertical">
+
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <fragment
+            android:id="@+id/photoPagerFragment"
+            android:name="com.photopicker.fragment.ImagePagerFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+    <com.photopicker.widget.Titlebar
+        android:id="@+id/titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?attr/colorPrimary"
+        app:mtb_title="@string/__picker_title" />
+    <View
+        android:id="@+id/status_bg_view"
+        android:layout_width="match_parent"
+        android:background="?attr/colorPrimaryDark"
+        android:layout_height="0dp"></View>
+</FrameLayout>

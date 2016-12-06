@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_photos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/__picker_pager_bg" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/check_view"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            android:background="#e5292929">
+
+            <ImageView
+                android:id="@+id/v_selected"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/pager_check_text"
+                android:clickable="true"
+                android:paddingLeft="10dip"
+                android:paddingRight="10dp"
+                android:src="@drawable/__picker_checkbox_bg" />
+
+            <TextView
+                android:id="@+id/pager_check_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:text="@string/__picker_check"
+                android:textColor="#ffffff"
+                android:textSize="15dp" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/bottom_nav"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="#e5000000"></View>
+    </LinearLayout>
+</RelativeLayout>

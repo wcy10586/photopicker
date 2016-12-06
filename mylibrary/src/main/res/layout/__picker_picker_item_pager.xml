@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.photopicker.widget.TouchImageView
+
+        android:id="@+id/iv_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:src="@drawable/__picker_ic_photo_black_48dp" />
+
+    <ProgressBar
+        android:id="@+id/progress_view"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center" />
+</FrameLayout>
+
