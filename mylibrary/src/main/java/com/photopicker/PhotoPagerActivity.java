@@ -18,9 +18,6 @@ import com.photopicker.widget.Titlebar;
 
 import java.util.List;
 
-/**
- * Created by changyou on 15/6/24.
- */
 public class PhotoPagerActivity extends AppCompatActivity implements PickerHelper.OnSelectedPhotoCountChangeListener {
 
     private ImagePagerFragment pagerFragment;
@@ -32,7 +29,6 @@ public class PhotoPagerActivity extends AppCompatActivity implements PickerHelpe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -49,14 +45,14 @@ public class PhotoPagerActivity extends AppCompatActivity implements PickerHelpe
         helper.addSelectedChangeListener(this);
         titlebar = (Titlebar) findViewById(R.id.titlebar);
         titlebar.init(this);
-        statusBgView = findViewById(R.id.status_bg_view);;
-        setAlpha(1f,0.8f);
+        statusBgView = findViewById(R.id.status_bg_view);
+        setAlpha(1f, 0.8f);
         setTitlebar();
         setStatusBgView();
         helper.addActivity(this);
     }
 
-    private void setStatusBgView(){
+    private void setStatusBgView() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) statusBgView.getLayoutParams();
             if (params == null) {
@@ -65,12 +61,13 @@ public class PhotoPagerActivity extends AppCompatActivity implements PickerHelpe
             params.height = Utils.getStateBarHeight(this);
             statusBgView.setLayoutParams(params);
         }
-        PickerConfig config =PickerHelper.getHelper().getConfig();
-        if ( config!= null && config.getStatusColor() != Integer.MAX_VALUE){
-             statusBgView.setBackgroundColor(config.getStatusColor());
+        PickerConfig config = PickerHelper.getHelper().getConfig();
+        if (config != null && config.getStatusColor() != Integer.MAX_VALUE) {
+            statusBgView.setBackgroundColor(config.getStatusColor());
         }
     }
-    private void setAlpha(float from,float to){
+
+    private void setAlpha(float from, float to) {
         ObjectAnimator animator = new ObjectAnimator();
         animator.setTarget(titlebar);
         animator.setDuration(200);
@@ -99,19 +96,48 @@ public class PhotoPagerActivity extends AppCompatActivity implements PickerHelpe
         if (photoPreview.isPreviewOnly()) {
             titlebar.getTvRight().setVisibility(View.GONE);
         } else {
-            titlebar.getTvRight().setVisibility(View.VISIBLE);
-            setTvRightText();
-            titlebar.getTvRight().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    List<Photo> photos = PickerHelper.getHelper().getSelectedList();
-                    if (photos != null && photos.size() > 0) {
-                        PickerHelper.getHelper().finishPick(false);
-                    } else {
-                        Toast.makeText(getApplicationContext(),getString(R.string.__picker_no_photo), Toast.LENGTH_SHORT).show();
+            if (photoPreview.isShowDelete()) {
+                titlebar.getTvLeft().setVisibility(View.GONE);
+                titlebar.getTvRight().setVisibility(View.GONE);
+                titlebar.getIvRight().setVisibility(View.VISIBLE);
+                titlebar.getIvRight().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int current = pagerFragment.getmViewPager().getCurrentItem();
+                        Photo photo = photoPreview.getPhotos().get(current);
+                        photoPreview.getPhotos().remove(photo);
+                        pagerFragment.getmPagerAdapter().notifyDataSetChanged();
+                        if (current > 0) {
+                            pagerFragment.getmViewPager().setCurrentItem(current - 1);
+                        }
+                        if (current > 0) {
+                            setTvLeft(current);
+                        }
+                        if (photoPreview.getOnPhotoDeleteListener() != null) {
+                            photoPreview.getOnPhotoDeleteListener().onPhotoDelete(photo.getPath());
+                        }
+                        if (photoPreview.getPhotos().isEmpty()) {
+                            helper.finishPick(false);
+                        }
+
                     }
-                }
-            });
+                });
+            } else {
+                titlebar.getTvRight().setVisibility(View.VISIBLE);
+                titlebar.getIvRight().setVisibility(View.GONE);
+                setTvRightText();
+                titlebar.getTvRight().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        List<Photo> photos = PickerHelper.getHelper().getSelectedList();
+                        if (photos != null && photos.size() > 0) {
+                            PickerHelper.getHelper().finishPick(false);
+                        } else {
+                            Toast.makeText(getApplicationContext(), getString(R.string.__picker_no_photo), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
         }
         titlebar.getIvLeft().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,8 +155,12 @@ public class PhotoPagerActivity extends AppCompatActivity implements PickerHelpe
 
     @Override
     public void onBackPressed() {
+        if (PickerHelper.getHelper() == null) {
+            super.onBackPressed();
+            return;
+        }
         if (PickerHelper.getHelper().getActivities().size() > 1) {
-            finish();
+            super.onBackPressed();
             return;
         }
         PickerHelper.getHelper().finishPick(true);
@@ -158,8 +188,7 @@ public class PhotoPagerActivity extends AppCompatActivity implements PickerHelpe
             helper.removeSelectedChangeListener(this);
             helper.removeActivity(this);
         }
-        if (PickerHelper.getHelper() != null && PickerHelper.getHelper().getActivities().isEmpty()){
-            PickerHelper.destroy();
-        }
+        PhotoPreview.setOpening(false);
     }
+
 }

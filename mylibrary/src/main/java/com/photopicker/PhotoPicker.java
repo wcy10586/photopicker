@@ -2,10 +2,13 @@ package com.photopicker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 
 
 import com.photopicker.entity.Photo;
 import com.photopicker.utils.PickerHelper;
+import com.photopicker.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +17,6 @@ import java.util.List;
  * Created by wuchangyou on 2016/10/20.
  */
 public class PhotoPicker {
-
     private static PhotoPicker photoPicker;
 
     private final int DEFAULT_MAX_COUNT = 9;
@@ -29,6 +31,8 @@ public class PhotoPicker {
     private boolean isOnlyPreview;
     private List<Photo> selectedList;
     private PickerConfig config;
+    private static boolean isOpening;
+    private boolean useSystemCamera = true;
 
     private PhotoPicker() {
         showCamera = true;
@@ -123,6 +127,15 @@ public class PhotoPicker {
         return this;
     }
 
+    public boolean isUseSystemCamera() {
+        return useSystemCamera;
+    }
+
+    public PhotoPicker setUseSystemCamera(boolean useSystemCamera) {
+        this.useSystemCamera = useSystemCamera;
+        return this;
+    }
+
     public OnPhotoPickListener getListener() {
         return listener;
     }
@@ -136,12 +149,21 @@ public class PhotoPicker {
         return this;
     }
 
+    protected static void setIsOpening(boolean opening) {
+        isOpening = opening;
+    }
+
     public void startPick(Context activity, OnPhotoPickListener listener) {
+        if (isOpening) {
+            return;
+        }
+//        setIsOpening(true);
         this.listener = listener;
         PickerHelper.init();
         PickerHelper.getHelper().setConfig(config);
         PickerHelper.getHelper().addAll(selectedList);
-        Intent intent = new Intent(activity, PhotoPickerActivity.class);
+        Intent intent = new Intent();
+        intent.setClass(activity,PhotoPickerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivity(intent);
     }

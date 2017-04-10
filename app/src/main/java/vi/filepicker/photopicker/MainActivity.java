@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.pick_picture).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PhotoPicker.init().setMaxCount(5).setShowCamera(true).startPick(MainActivity.this, new OnPhotoPickListener() {
+                PhotoPicker.init().setMaxCount(5).setShowCamera(true).setUseSystemCamera(false).startPick(MainActivity.this, new OnPhotoPickListener() {
                     @Override
                     public void onPhotoPick(boolean userCancel, List<String> list) {
                         if (userCancel) {

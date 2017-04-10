@@ -14,6 +14,7 @@ import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -52,9 +53,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * Created by changyou on 15/5/31.
- */
 public class PhotoPickerFragment extends Fragment implements PickerHelper.OnSelectedPhotoCountChangeListener, PickerHelper.OnSelectedStateChangeListener {
 
     private ImageCaptureManager captureManager;
@@ -82,10 +80,11 @@ public class PhotoPickerFragment extends Fragment implements PickerHelper.OnSele
     private Animation enterAnim;
     private Animation exitAnim;
 
+
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mContext = activity.getApplicationContext();
     }
 
     @Override
@@ -124,6 +123,7 @@ public class PhotoPickerFragment extends Fragment implements PickerHelper.OnSele
                 });
 
         captureManager = new ImageCaptureManager(getActivity());
+
     }
 
 
@@ -132,7 +132,7 @@ public class PhotoPickerFragment extends Fragment implements PickerHelper.OnSele
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.__picker_fragment_photo_picker, container, false);
         View bottomNav = rootView.findViewById(R.id.bottom_nav);
-        navigationBarHeight = Utils.getNavigationBarHeight(getContext());
+        navigationBarHeight = Utils.getNavigationBarHeight(getActivity());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) bottomNav.getLayoutParams();
             if (params == null) {
@@ -175,7 +175,7 @@ public class PhotoPickerFragment extends Fragment implements PickerHelper.OnSele
         if (params2 == null) {
             params2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
-        params2.topMargin = Utils.getStateBarHeight(getContext());
+        params2.topMargin = Utils.getStateBarHeight(getActivity());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             params2.bottomMargin = navigationBarHeight;
         }
@@ -228,7 +228,7 @@ public class PhotoPickerFragment extends Fragment implements PickerHelper.OnSele
         listPopupWindow = new ListPopupWindow(getActivity());
 
         listPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));//替换背景
-        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         int widths = wm.getDefaultDisplay().getWidth();
         listPopupWindow.setWidth(widths);//ListPopupWindow.MATCH_PARENT还是会有边距，直接拿到屏幕宽度来设置也不行，因为默认的background有左右padding值。
         listPopupWindow.setAnchorView(rootView.findViewById(R.id.bottom_bar));
@@ -258,14 +258,14 @@ public class PhotoPickerFragment extends Fragment implements PickerHelper.OnSele
     private void showPopupWindow() {
         listPopupWindow.show();
         if (enterAnim == null) {
-            enterAnim = AnimationUtils.loadAnimation(getContext(), R.anim.__picker_dialog_enter);
+            enterAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.__picker_dialog_enter);
         }
         listPopupWindow.getListView().startAnimation(enterAnim);
     }
 
     private void dismissPopupWindow() {
         if (exitAnim == null) {
-            exitAnim = AnimationUtils.loadAnimation(getContext(), R.anim.__picker_dialog_exit);
+            exitAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.__picker_dialog_exit);
             exitAnim.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
@@ -303,8 +303,13 @@ public class PhotoPickerFragment extends Fragment implements PickerHelper.OnSele
             @Override
             public void onClick(View view) {
                 try {
-                    Intent intent = captureManager.dispatchTakePictureIntent();
-                    startActivityForResult(intent, ImageCaptureManager.REQUEST_TAKE_PHOTO);
+                    if (PhotoPicker.getCurrentPhotoPicker().isUseSystemCamera()) {
+                        Intent intent = captureManager.dispatchTakePictureIntent();
+                        startActivityForResult(intent, ImageCaptureManager.REQUEST_TAKE_PHOTO);
+                    } else {
+                        Intent intent = captureManager.dispatchTakePictureIntent(getActivity());
+                        startActivityForResult(intent, ImageCaptureManager.REQUEST_TAKE_PHOTO);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -332,8 +337,17 @@ public class PhotoPickerFragment extends Fragment implements PickerHelper.OnSele
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ImageCaptureManager.REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             captureManager.galleryAddPic();
-            String path = captureManager.getCurrentPhotoPath();
-            PickerHelper.getHelper().capturePhotoFinish(path);
+            if (PhotoPicker.getCurrentPhotoPicker().isUseSystemCamera()) {
+                String path = captureManager.getCurrentPhotoPath();
+                PickerHelper.getHelper().capturePhotoFinish(path);
+            } else {
+                if (data != null) {
+                    String path = data.getStringExtra(Utils.EXTRA_IMAGE);
+                    PickerHelper.getHelper().capturePhotoFinish(path);
+                } else {
+                    PickerHelper.getHelper().capturePhotoFinish("");
+                }
+            }
         }
     }
 

@@ -22,9 +22,7 @@ import static android.provider.MediaStore.Images.ImageColumns.BUCKET_ID;
 import static android.provider.MediaStore.MediaColumns.DATA;
 import static android.provider.MediaStore.MediaColumns.DATE_ADDED;
 
-/**
- * Created by changyou on 15/5/31.
- */
+
 public class MediaStoreHelper {
 
     public final static int INDEX_ALL_PHOTOS = 0;

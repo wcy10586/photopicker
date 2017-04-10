@@ -15,4 +15,6 @@
     <string name="__picker_preview">预览</string>
     <string name="__picker_check">选择</string>
     <string name="__picker_no_photo">还没有选择图片</string>
+    <string name="deal_pic">正在保存图片 . . .</string>
+    <string name="camera_error">拍照失败！</string>
 </resources>

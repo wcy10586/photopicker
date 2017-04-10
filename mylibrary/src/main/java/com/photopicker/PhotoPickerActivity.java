@@ -4,12 +4,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.animation.AnimatorCompatHelper;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
 
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.photopicker.entity.Photo;
@@ -33,7 +35,6 @@ public class PhotoPickerActivity extends AppCompatActivity implements PickerHelp
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -84,7 +85,7 @@ public class PhotoPickerActivity extends AppCompatActivity implements PickerHelp
         setRightText(PickerHelper.getHelper().getSelectedList().size());
     }
 
-    private void setStatusBgView(){
+    private void setStatusBgView() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) statusBgView.getLayoutParams();
             if (params == null) {
@@ -94,8 +95,8 @@ public class PhotoPickerActivity extends AppCompatActivity implements PickerHelp
             statusBgView.setLayoutParams(params);
         }
 
-        PickerConfig config =PickerHelper.getHelper().getConfig();
-        if ( config!= null && config.getStatusColor() != Integer.MAX_VALUE){
+        PickerConfig config = PickerHelper.getHelper().getConfig();
+        if (config != null && config.getStatusColor() != Integer.MAX_VALUE) {
             statusBgView.setBackgroundColor(config.getStatusColor());
         }
     }
@@ -105,7 +106,6 @@ public class PhotoPickerActivity extends AppCompatActivity implements PickerHelp
     }
 
     private void addFragment() {
-        pickerFragment = (PhotoPickerFragment) getSupportFragmentManager().findFragmentByTag("tag");
         if (pickerFragment == null) {
             pickerFragment = new PhotoPickerFragment();
             getSupportFragmentManager()
@@ -134,7 +134,7 @@ public class PhotoPickerActivity extends AppCompatActivity implements PickerHelp
         if (imagePagerFragment != null && imagePagerFragment.isVisible()) {
             imagePagerFragment.runExitAnimation(new Runnable() {
                 public void run() {
-                    if (imagePagerFragment.isAdded()) {
+                    if (imagePagerFragment != null && imagePagerFragment.isAdded()) {
                         titlebar.getTvLeft().setVisibility(View.GONE);
                         getSupportFragmentManager().beginTransaction().remove(imagePagerFragment).commit();
                     }
@@ -145,7 +145,11 @@ public class PhotoPickerActivity extends AppCompatActivity implements PickerHelp
                 }
             });
         } else {
-            PickerHelper.getHelper().finishPick(true);
+            if (PickerHelper.getHelper() != null) {
+                PickerHelper.getHelper().finishPick(true);
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -153,7 +157,7 @@ public class PhotoPickerActivity extends AppCompatActivity implements PickerHelp
     public void addImagePagerFragment() {
         if (imagePagerFragment == null) {
             imagePagerFragment = new ImagePagerFragment();
-        }else if (imagePagerFragment.isAdded()){
+        } else if (imagePagerFragment.isAdded()) {
             return;
         }
         getSupportFragmentManager()
@@ -181,7 +185,6 @@ public class PhotoPickerActivity extends AppCompatActivity implements PickerHelp
         setRightText(count);
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -189,13 +192,10 @@ public class PhotoPickerActivity extends AppCompatActivity implements PickerHelp
             PickerHelper.getHelper().removeSelectedChangeListener(this);
             PickerHelper.getHelper().removeActivity(this);
         }
-        if (pickerFragment != null){
+        if (pickerFragment != null) {
             pickerFragment.clearDirectories();
         }
-
-        if (PickerHelper.getHelper() != null && PickerHelper.getHelper().getActivities().isEmpty()){
-            PickerHelper.destroy();
-        }
+        PhotoPicker.setIsOpening(false);
     }
 }
 

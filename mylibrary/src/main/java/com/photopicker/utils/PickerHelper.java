@@ -2,8 +2,8 @@ package com.photopicker.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
-
 
 import com.photopicker.PhotoPicker;
 import com.photopicker.PhotoPreview;
@@ -31,6 +31,7 @@ public class PickerHelper {
     private List<Activity> activities;
     private PickerConfig config;
 
+
     private PickerHelper() {
         activities = new ArrayList<>();
         selectedList = new ArrayList<>();
@@ -45,14 +46,14 @@ public class PickerHelper {
     }
 
     public static void destroy() {
-        helper.config = null;
-        helper.listeners.clear();
-        helper.selectedList.clear();
-        helper.currentPagePhotos.clear();
-        helper.stateChangeListeners.clear();
-        helper = null;
-        PhotoPreview.destroy();
-        PhotoPicker.destroy();
+//        helper.config = null;
+//        helper.listeners.clear();
+//        helper.selectedList.clear();
+//        helper.currentPagePhotos.clear();
+//        helper.stateChangeListeners.clear();
+//        helper = null;
+//        PhotoPreview.destroy();
+//        PhotoPicker.destroy();
     }
 
     public static PickerHelper getHelper() {
@@ -214,12 +215,13 @@ public class PickerHelper {
     }
 
     private void finishPick() {
-
         for (Iterator<Activity> iterator = activities.iterator(); iterator.hasNext(); ) {
             Activity activity = iterator.next();
             activity.finish();
         }
         activities.clear();
+        Log.i("ssss","==finish==  " + helper);
+        destroy();
     }
 
     public void capturePhotoFinish(String path) {

@@ -15,4 +15,7 @@
 
     <color name="__picker_item_unselected_center">#00000000</color><!--100%透明度-->
     <color name="__picker_item_unselected_border">#40000000</color>
+    <color name="__camera_material_blue">#FF375BF1</color>
+    <color name="__transparent">@android:color/transparent</color>
+    <color name="__white">@android:color/white</color>
 </resources>

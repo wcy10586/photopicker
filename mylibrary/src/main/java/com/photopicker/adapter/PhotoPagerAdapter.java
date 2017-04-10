@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.photopicker.R;
 import com.photopicker.entity.Photo;
+import com.photopicker.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,12 +45,7 @@ public class PhotoPagerAdapter extends PagerAdapter {
         final ProgressBar progressView = (ProgressBar) itemView.findViewById(R.id.progress_view);
         progressView.setVisibility(View.VISIBLE);
         final String path = paths.get(position).getPath();
-        final Uri uri;
-        if (path.startsWith("http") || path.startsWith("https")) {
-            uri = Uri.parse(path);
-        } else {
-            uri = Uri.fromFile(new File(path));
-        }
+        final Uri uri = Utils.getUri(path);
         mGlide.load(uri)
                 .thumbnail(0.1f)
                 .listener(new RequestListener<Uri, GlideDrawable>() {
@@ -73,11 +70,11 @@ public class PhotoPagerAdapter extends PagerAdapter {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (context instanceof Activity) {
-                    if (!((Activity) context).isFinishing()) {
-                        ((Activity) context).onBackPressed();
-                    }
-                }
+//                if (context instanceof Activity) {
+//                    if (!((Activity) context).isFinishing()) {
+//                        ((Activity) context).onBackPressed();
+//                    }
+//                }
             }
         });
 

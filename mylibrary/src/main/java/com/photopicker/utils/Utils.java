@@ -1,11 +1,13 @@
 package com.photopicker.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.support.v4.view.ViewConfigurationCompat;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.TypedValue;
-import android.view.ViewConfiguration;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -13,6 +15,10 @@ import java.lang.reflect.Method;
  * Created by wuchangyou on 2016/11/11.
  */
 public class Utils {
+    public static final String ANDROID_RESOURCE = "android.resource://";
+
+    public static final String EXTRA_IMAGE = "image_path";
+
     public static int getNavigationBarHeight(Context context) {
         int navigationbarHeight = 0;
         boolean hasNavigationBar = hasNavigationBar(context);
@@ -27,7 +33,7 @@ public class Utils {
         return navigationbarHeight;
     }
 
-    public static boolean hasNavigationBar(Context context){
+    public static boolean hasNavigationBar(Context context) {
         Resources resources = context.getResources();
         int resIdShow = resources.getIdentifier("config_showNavigationBar", "bool", "android");
         boolean hasNavigationBar = false;
@@ -71,4 +77,33 @@ public class Utils {
         }
         return actionBarHeigh;
     }
+
+    public static void putBooleanSp(Context context, String name, boolean value) {
+        SharedPreferences sp = getSp(context);
+        sp.edit().putBoolean(name, value).commit();
+    }
+
+    public static boolean getBooleanSp(Context context, String name) {
+        SharedPreferences sp = getSp(context);
+        return sp.getBoolean(name, true);
+    }
+
+    private static SharedPreferences getSp(Context context) {
+        return context.getApplicationContext()
+                .getSharedPreferences("sp_photopicker", Context.MODE_PRIVATE);
+    }
+
+    public static Uri getUri(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return Uri.EMPTY;
+        }
+        if (path.startsWith("http") || path.startsWith("https")) {
+            return Uri.parse(path);
+        } else if (path.startsWith(ANDROID_RESOURCE)) {
+            return Uri.parse(path);
+        } else {
+            return Uri.fromFile(new File(path));
+        }
+    }
+
 }

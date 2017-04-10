@@ -7,4 +7,8 @@
         <item name="@android:windowExitAnimation">@anim/__picker_dialog_exit</item>
         //退出时的动画
     </style>
+    <style name="__Picker.Camera.Theme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>

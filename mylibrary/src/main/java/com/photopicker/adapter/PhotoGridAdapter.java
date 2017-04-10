@@ -1,6 +1,7 @@
 package com.photopicker.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import com.photopicker.entity.PhotoDirectory;
 import com.photopicker.event.OnPhotoClickListener;
 import com.photopicker.utils.MediaStoreHelper;
 import com.photopicker.utils.PickerHelper;
+import com.photopicker.utils.Utils;
 
 
 import java.io.File;
@@ -110,8 +112,9 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
                 photo = photos.get(position);
             }
 
+            Uri uri = Utils.getUri(photo.getPath());
             glide
-                    .load(new File(photo.getPath()))
+                    .load(uri)
                     .centerCrop()
                     .dontAnimate()
                     .thumbnail(0.5f)
@@ -168,8 +171,8 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
 
     @Override
     public int getItemCount() {
-        int photosCount =
-                photoDirectories.size() == 0 ? 0 : (getCurrentPhotos() == null ? 0 : getCurrentPhotos().size());
+        int photosCount = (photoDirectories == null || photoDirectories.isEmpty()) ? 0
+                : (getCurrentPhotos() == null ? 0 : getCurrentPhotos().size());
         if (showCamera()) {
             return photosCount + 1;
         }

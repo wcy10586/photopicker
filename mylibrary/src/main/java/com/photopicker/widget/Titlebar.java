@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.photopicker.PhotoPreview;
 import com.photopicker.PickerConfig;
 import com.photopicker.R;
 import com.photopicker.utils.PickerHelper;
@@ -24,6 +25,15 @@ public class Titlebar extends FrameLayout {
     private RelativeLayout rootView;
     private TextView tvLeft;
     private ImageView ivLeft;
+    private TextView tvTitle;
+    private TextView tvRight;
+    private ImageView ivRight;
+
+    private OnClickListener leftOnclickListener;
+    private OnClickListener rightOnclickListener;
+
+    private Activity mActivity;
+
 
     public TextView getTvTitle() {
         return tvTitle;
@@ -50,14 +60,6 @@ public class Titlebar extends FrameLayout {
         return rootView;
     }
 
-    private TextView tvTitle;
-    private TextView tvRight;
-    private ImageView ivRight;
-
-    private OnClickListener leftOnclickListener;
-    private OnClickListener rightOnclickListener;
-
-    private Activity mActivity;
 
     public Titlebar(Context context) {
         this(context, null);
@@ -148,7 +150,7 @@ public class Titlebar extends FrameLayout {
 
     }
 
-    public void setRitht(Drawable rightDrawable, String rightTxt, OnClickListener listener) {
+    public void setRight(Drawable rightDrawable, String rightTxt, OnClickListener listener) {
         if (!TextUtils.isEmpty(rightTxt)) {
             tvRight.setVisibility(VISIBLE);
             tvRight.setText(rightTxt);
@@ -165,8 +167,6 @@ public class Titlebar extends FrameLayout {
                 rightOnclickListener = listener;
                 ivRight.setOnClickListener(rightOnclickListener);
             }
-        } else {
-
         }
 
         if (listener != null) {
@@ -195,7 +195,7 @@ public class Titlebar extends FrameLayout {
 
 
             //right: text first
-            setRitht(rightDrawable, rightTxt, null);
+            setRight(rightDrawable, rightTxt, null);
 
 
         } finally {
@@ -232,7 +232,9 @@ public class Titlebar extends FrameLayout {
             if (config.getTitleBarColor()!= Integer.MAX_VALUE){
                 setBackgroundColor(config.getTitleBarColor());
             }
+            ivRight.setImageResource(config.getDeleteImgRes());
         }
+
 
     }
 

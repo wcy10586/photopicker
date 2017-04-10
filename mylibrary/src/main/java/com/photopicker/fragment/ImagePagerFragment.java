@@ -35,9 +35,7 @@ import com.photopicker.utils.PickerHelper;
 import com.photopicker.utils.Utils;
 
 
-/**
- * Created by changyou on 15/6/21.
- */
+
 public class ImagePagerFragment extends Fragment implements PickerHelper.OnSelectedStateChangeListener {
 
 
@@ -74,7 +72,7 @@ public class ImagePagerFragment extends Fragment implements PickerHelper.OnSelec
         mPagerAdapter = new PhotoPagerAdapter(Glide.with(this), preview.getPhotos());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             View bottomNav = rootView.findViewById(R.id.bottom_nav);
-            int height = Utils.getNavigationBarHeight(getContext());
+            int height = Utils.getNavigationBarHeight(getActivity());
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) bottomNav.getLayoutParams();
             if (params == null) {
                 params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
@@ -163,7 +161,10 @@ public class ImagePagerFragment extends Fragment implements PickerHelper.OnSelec
     }
 
     private void setSelectedView() {
-
+         if (preview.isShowDelete()){
+             checkView.setVisibility(View.GONE );
+             return;
+         }
         if (checkView != null) {
             checkView.setVisibility(preview.isPreviewOnly() ? View.GONE : View.VISIBLE);
             checkView.setOnClickListener(new View.OnClickListener() {
@@ -288,5 +289,13 @@ public class ImagePagerFragment extends Fragment implements PickerHelper.OnSelec
         if (photo.equals(preview.getPhotos().get(mViewPager.getCurrentItem()))) {
             selectedView.setSelected(photo.isSelected());
         }
+    }
+
+    public PhotoPagerAdapter getmPagerAdapter(){
+        return mPagerAdapter;
+    }
+
+    public ViewPager getmViewPager(){
+        return mViewPager;
     }
 }

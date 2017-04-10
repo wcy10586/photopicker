@@ -2,10 +2,14 @@ package com.photopicker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 
 
 import com.photopicker.entity.Photo;
+import com.photopicker.event.OnPhotoDeleteListener;
 import com.photopicker.utils.PickerHelper;
+import com.photopicker.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +27,10 @@ public class PhotoPreview {
     private OnPhotoPickListener listener;
     private List<Photo> selectedList;
     private PickerConfig config;
+    private boolean showDelete;
+    private OnPhotoDeleteListener deleteListener;
+    private static boolean isOpening;
+    private static Handler mHandler = new Handler(Looper.getMainLooper());
 
     private PhotoPreview() {
         previewOnly = true;
@@ -117,7 +125,30 @@ public class PhotoPreview {
         return this;
     }
 
+    public boolean isShowDelete() {
+        return showDelete;
+    }
+
+    public PhotoPreview setShowDelete(boolean showDelete, OnPhotoDeleteListener deleteListener) {
+        this.showDelete = showDelete;
+        this.deleteListener = deleteListener;
+        return this;
+    }
+
+    public OnPhotoDeleteListener getOnPhotoDeleteListener() {
+        return deleteListener;
+    }
+
+    protected static void setOpening(boolean opening) {
+        isOpening = opening;
+    }
+
+
     public void startPreview(Context activity, OnPhotoPickListener listener) {
+        if (isOpening) {
+            return;
+        }
+        setOpening(true);
         PickerHelper helper = PickerHelper.getHelper();
         if (helper == null) {
             helper = PickerHelper.init();

@@ -27,6 +27,7 @@ public class PickerConfig {
     private int bottomBarColor;
     private int chooseTextSize;
     private int chooseTextColor;
+    private int deleteImgRes;
 
     public PickerConfig() {
         init();
@@ -50,6 +51,7 @@ public class PickerConfig {
         bottomBarColor = Color.parseColor("#e5292929");
         chooseTextSize = 15;
         chooseTextColor = Color.WHITE;
+        deleteImgRes = R.drawable.__preview_delete;
     }
 
     public int getCameraRes() {
@@ -283,6 +285,20 @@ public class PickerConfig {
      */
     public PickerConfig setChooseTextColor(int chooseTextColor) {
         this.chooseTextColor = chooseTextColor;
+        return this;
+    }
+
+    public int getDeleteImgRes() {
+        return deleteImgRes;
+    }
+
+    /**
+     * 设置删除按钮的图片
+     *
+     * @param deleteImgRes
+     */
+    public PickerConfig setDeleteImgRes(int deleteImgRes) {
+        this.deleteImgRes = deleteImgRes;
         return this;
     }
 }
